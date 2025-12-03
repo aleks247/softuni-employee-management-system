@@ -9,15 +9,20 @@ import CreateUserModal from "./components/CreateUserModal";
 function App() {
     const [showCreateUser, setShowCreateUser] = useState(false);
 
-    const [users, setUsers] = useState([])
-    
+    const [users, setUsers] = useState([]);
+
+    const [forceRefresh, setForceRefresh] = useState(true);
+
     useEffect(() => {
-        fetch('http://localhost:3030/jsonstore/users')
-        .then(response => response.json())
-        .then(data => {
-            setUsers(Object.values(data))
-        }).catch(err=>{alert(err.message)});
-    }, [])
+        fetch("http://localhost:3030/jsonstore/users")
+            .then((response) => response.json())
+            .then((data) => {
+                setUsers(Object.values(data));
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
+    }, [forceRefresh]);
 
     const addUserClickHandler = () => {
         setShowCreateUser(true);
@@ -28,12 +33,13 @@ function App() {
         // setShowCreateUser()
         const formData = new FormData(event.target);
 
-        const {country, city, street, streetNumber, ...userData} = Object.fromEntries(formData);
+        const { country, city, street, streetNumber, ...userData } =
+            Object.fromEntries(formData);
         userData.address = {
-            country, 
-            city, 
-            street, 
-            streetNumber
+            country,
+            city,
+            street,
+            streetNumber,
         };
 
         userData.createdAt = new Date().toISOString();
@@ -44,13 +50,8 @@ function App() {
             headers: { "content-type": "application/json" },
             body: JSON.stringify(userData),
         })
-            .then((response) => response.json())
-            .then((result) => {
-                console.log(result);
-            })
-            .catch((err) => {
-                alert(err.message);
-            });
+            .then(() => setForceRefresh((prev) => !prev))
+            .catch((err) => alert(err.message))
     };
 
     const closeUserModalHandler = () => {
