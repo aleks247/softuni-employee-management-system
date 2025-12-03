@@ -50,7 +50,10 @@ function App() {
             headers: { "content-type": "application/json" },
             body: JSON.stringify(userData),
         })
-            .then(() => setForceRefresh((prev) => !prev))
+            .then(() => {
+                closeUserModalHandler();
+                setForceRefresh((prev) => !prev);
+            })
             .catch((err) => alert(err.message))
     };
 
