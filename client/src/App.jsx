@@ -13,6 +13,8 @@ function App() {
 
     const [refresh, setRefresh] = useState(true);
 
+    const [sortUsers, setSortUsers] = useState(false)
+
     useEffect(() => {
         fetch("http://localhost:3030/jsonstore/users")
             .then((response) => response.json())
@@ -65,6 +67,15 @@ function App() {
         setShowCreateUser(false);
     };
 
+    const sortUsersHandler = () => {
+        if (sortUsers) {
+            setUsers(state => [...state].sort((userA, userB)=> new Date(userB.createdAt) - new Date(userA.createdAt)))
+        }else {
+            setUsers(state => [...state].sort((userA, userB)=> new Date(userB.createdAt) - new Date(userA.createdAt)).reverse())
+        }
+        setSortUsers(state => !state);
+    }
+
     return (
         <main>
             <Header />
@@ -72,7 +83,7 @@ function App() {
                 <section className="card users-container">
                     <Search />
 
-                    <UserList users={users} forceRef={forceRefresh}/>
+                    <UserList users={users} forceRef={forceRefresh} onSort={sortUsersHandler}/>
 
                     <button
                         onClick={addUserClickHandler}

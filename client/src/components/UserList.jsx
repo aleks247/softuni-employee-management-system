@@ -4,7 +4,7 @@ import UserDetails from "./UserDetails";
 import DeleteUserModal from "./DeleteUserModal";
 import UserSaveModal from "./UserSaveModal";
 
-export default function UserList({ users, forceRef }) {
+export default function UserList({ users, forceRef, onSort }) {
     const [showUserDetails, setShowUserDetails] = useState(false);
     const [showUserDelete, setShowUserDelete] = useState(false);
     const [showUserEdit, setShowUserEdit] = useState(false);
@@ -141,7 +141,7 @@ export default function UserList({ users, forceRef }) {
                                 ></path>
                             </svg>
                         </th>
-                        <th>
+                        <th onClick={onSort}>
                             Created
                             <svg
                                 aria-hidden="true"
