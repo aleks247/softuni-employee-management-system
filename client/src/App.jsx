@@ -11,7 +11,7 @@ function App() {
 
     const [users, setUsers] = useState([]);
 
-    const [forceRefresh, setForceRefresh] = useState(true);
+    const [refresh, setRefresh] = useState(true);
 
     useEffect(() => {
         fetch("http://localhost:3030/jsonstore/users")
@@ -22,11 +22,15 @@ function App() {
             .catch((err) => {
                 alert(err.message);
             });
-    }, [forceRefresh]);
+    }, [refresh]);
 
     const addUserClickHandler = () => {
         setShowCreateUser(true);
     };
+
+    const forceRefresh = () =>{
+        setRefresh(state => !state)
+    }
 
     const addUserSubmitHandler = (event) => {
         event.preventDefault();
@@ -52,7 +56,7 @@ function App() {
         })
             .then(() => {
                 closeUserModalHandler();
-                setForceRefresh((prev) => !prev);
+                setRefresh((prev) => !prev);
             })
             .catch((err) => alert(err.message))
     };
@@ -68,7 +72,7 @@ function App() {
                 <section className="card users-container">
                     <Search />
 
-                    <UserList users={users} />
+                    <UserList users={users} forceRef={forceRefresh}/>
 
                     <button
                         onClick={addUserClickHandler}
