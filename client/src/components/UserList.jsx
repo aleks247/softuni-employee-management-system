@@ -2,10 +2,12 @@ import { useState } from "react";
 import UserItem from "./UserItem";
 import UserDetails from "./UserDetails";
 import DeleteUserModal from "./DeleteUserModal";
+import UserSaveModal from "./UserSaveModal";
 
 export default function UserList({ users, forceRef }) {
     const [showUserDetails, setShowUserDetails] = useState(false);
     const [showUserDelete, setShowUserDelete] = useState(false);
+    const [showUserEdit, setShowUserEdit] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
 
     const detailsActionClickHandler = (userId) => {
@@ -13,16 +15,53 @@ export default function UserList({ users, forceRef }) {
         setSelectedUserId(userId);
     };
 
-    const closeModalHandler = () =>{
+    const closeModalHandler = () => {
         setShowUserDelete(false);
         setShowUserDetails(false);
+        setShowUserEdit(false);
         setSelectedUserId(null);
-    }
+    };
 
     const deleteActionClickHandler = (userId) => {
         setSelectedUserId(userId);
         setShowUserDelete(true);
-    }
+    };
+
+    const editActionClickHandler = (userId) => {
+        setSelectedUserId(userId);
+        setShowUserEdit(true);
+    };
+
+    const editUserHandler = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        const { country, city, street, streetName, ...userData } =
+            Object.fromEntries(formData);
+
+        userData.address = {
+            country,
+            city,
+            street,
+            streetName,
+        };
+
+        userData.updatedAt = new Date().toISOString();
+
+        try {
+            await fetch(`http://localhost:3030/jsonstore/users/${selectedUserId}`, {
+                method : 'PATCH',
+                headers : {
+                    'content-type' : 'application/json',
+
+                },
+                body: JSON.stringify(userData),
+            });  
+            closeModalHandler()
+            forceRef();
+        }catch (err){alert(err.message)}
+    };
 
     return (
         <div className="table-wrapper">
@@ -130,12 +169,33 @@ export default function UserList({ users, forceRef }) {
                             key={user._id}
                             onDetailsClick={detailsActionClickHandler}
                             onDeleteClick={deleteActionClickHandler}
+                            onEditClick={editActionClickHandler}
                         />
                     ))}
                 </tbody>
             </table>
-            {showUserDetails && <UserDetails userId={selectedUserId} onClose={closeModalHandler} />}
-            {showUserDelete && <DeleteUserModal userId={selectedUserId} onClose={closeModalHandler} forceRef={forceRef}/>}
+            {showUserDetails && (
+                <UserDetails
+                    userId={selectedUserId}
+                    onClose={closeModalHandler}
+                />
+            )}
+            {showUserDelete && (
+                <DeleteUserModal
+                    userId={selectedUserId}
+                    onClose={closeModalHandler}
+                    forceRef={forceRef}
+                />
+            )}
+            {showUserEdit && (
+                <UserSaveModal
+                    userId={selectedUserId}
+                    onClose={closeModalHandler}
+                    forceRef={forceRef}
+                    onSubmit={editUserHandler}
+                    isEditing
+                />
+            )}
         </div>
     );
 }

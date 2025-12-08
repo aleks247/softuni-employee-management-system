@@ -10,6 +10,7 @@ export default function UserItem({
     imageUrl,
     onDetailsClick,
     onDeleteClick,
+    onEditClick,
 }) {
     return (
         <tr>
@@ -27,7 +28,7 @@ export default function UserItem({
             <td>{fromIsoDate(createdAt)}</td>
 
             <td className="actions">
-                <button className="btn edit-btn" title="Edit">
+                <button className="btn edit-btn" title="Edit" onClick={() => onEditClick(_id)}>
                     <svg
                         aria-hidden="true"
                         focusable="false"

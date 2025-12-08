@@ -1,14 +1,29 @@
-export default function CreateUserModal({
+import { useEffect, useState } from "react";
+
+export default function UserSaveModal({
     onClose,
+    userId,
     onSubmit,
+    isEditing,
 }) {
+    const [user, setUser]= useState({})
+
+    useEffect(() => {
+        if (isEditing) {
+            fetch(`http://localhost:3030/jsonstore/users/${userId}`)
+            .then(response => response.json())
+            .then(data => setUser(data))
+            .catch((err) => alert(err.message))
+        }
+    }, [isEditing, userId]);
+
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
             <div className="modal">
                 <div className="user-container">
                     <header className="headers">
-                        <h2>Add User</h2>
+                        <h2>{isEditing ? "Edit" : "Add"} User</h2>
                         <button className="btn close" onClick={onClose}>
                             <svg
                                 aria-hidden="true"
@@ -39,6 +54,7 @@ export default function CreateUserModal({
                                         id="firstName"
                                         name="firstName"
                                         type="text"
+                                        defaultValue={user.firstName}
                                     />
                                 </div>
                             </div>
@@ -52,6 +68,7 @@ export default function CreateUserModal({
                                         id="lastName"
                                         name="lastName"
                                         type="text"
+                                        defaultValue={user.lastName}
                                     />
                                 </div>
                             </div>
@@ -68,6 +85,7 @@ export default function CreateUserModal({
                                         id="email"
                                         name="email"
                                         type="text"
+                                        defaultValue={user.email}
                                     />
                                 </div>
                             </div>
@@ -83,6 +101,7 @@ export default function CreateUserModal({
                                         id="phoneNumber"
                                         name="phoneNumber"
                                         type="text"
+                                        defaultValue={user.phoneNumber}
                                     />
                                 </div>
                             </div>
@@ -98,6 +117,7 @@ export default function CreateUserModal({
                                     id="imageUrl"
                                     name="imageUrl"
                                     type="text"
+                                    defaultValue={user.imageUrl}
                                 />
                             </div>
                         </div>
@@ -113,6 +133,7 @@ export default function CreateUserModal({
                                         id="country"
                                         name="country"
                                         type="text"
+                                        defaultValue={user.address?.country}
                                     />
                                 </div>
                             </div>
@@ -122,7 +143,7 @@ export default function CreateUserModal({
                                     <span>
                                         <i className="fa-solid fa-city"></i>
                                     </span>
-                                    <input id="city" name="city" type="text" />
+                                    <input id="city" name="city" type="text" defaultValue={user.address?.city}/>
                                 </div>
                             </div>
                         </div>
@@ -138,6 +159,7 @@ export default function CreateUserModal({
                                         id="street"
                                         name="street"
                                         type="text"
+                                        defaultValue={user.address?.street}
                                     />
                                 </div>
                             </div>
@@ -153,6 +175,7 @@ export default function CreateUserModal({
                                         id="streetNumber"
                                         name="streetNumber"
                                         type="text"
+                                        defaultValue={user.address?.streetNumber}
                                     />
                                 </div>
                             </div>

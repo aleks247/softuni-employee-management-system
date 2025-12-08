@@ -12,7 +12,7 @@
 
         {/* <!-- <div className="loading-shade"> --> */}
         {/* <!-- Loading spinner  --> */}
-        {/* <!-- <div className="spinner"></div> --> */}
+        <div className="spinner"></div>
         {/* <!-- No users added yet  --> */}
 
         <div className="table-overlap">
